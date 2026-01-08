@@ -1,0 +1,18 @@
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+server:
+  port: 8761
+
+
+
+# register-with-eureka: false => Do NOT register this application as a client
+# fetch-registry: false Do NOT fetch service registry from another Eureka server
+
+#  Why?
+#  You are running only one Eureka server
+#  No other Eureka servers exist to fetch data from
+#  If you had multiple Eureka servers (cluster) → this would be true
