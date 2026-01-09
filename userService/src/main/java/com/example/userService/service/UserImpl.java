@@ -6,6 +6,8 @@ import com.example.userService.entity.Rating;
 import com.example.userService.entity.User;
 import com.example.userService.exception.ResourceAlreadyExistsException;
 import com.example.userService.exception.ResourceNotFoundException;
+import com.example.userService.external.service.HotelService;
+import com.example.userService.external.service.RatingService;
 import com.example.userService.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -24,6 +25,12 @@ public class UserImpl implements UserService {
     private UserRepository userRepository;
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    private HotelService hotelService;
+
+    @Autowired
+    private RatingService ratingServices;
 
     private Logger logger = LoggerFactory.getLogger(UserImpl.class);
 
@@ -45,28 +52,49 @@ public class UserImpl implements UserService {
 
     @Override
     public User findById(Long id) {
-
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        //  Fetch ratings
-        Rating[] ratingsArray = restTemplate.getForObject(
-                "http://localhost:8989/ratings/users/{id}",
-                Rating[].class,
-                id
-        );
+        /**
+         *  Fetch ratings using the RestTemplate
+          */
+//        Rating[] ratingsArray = restTemplate.getForObject(
+//                "http://RATING-SERVICE/ratings/users/{id}",
+//                Rating[].class,
+//                id
+//        );
+//        List<Rating> ratingsOfUser = Arrays.asList(ratingsArray);
 
-        List<Rating> ratingsOfUser = Arrays.asList(ratingsArray);
+
+
+        /**
+         * using feign client we can reduce the size of code
+         */
+        List<Rating> ratings = ratingServices.getRatings(id);
+
+
+
+
+
 
         // Fetch hotel for each rating
-        List<Rating> ratingList = ratingsOfUser.stream()
+        List<Rating> ratingList = ratings.stream()
                 .map(rating -> {
 
-                    Hotel hotel = restTemplate.getForObject(
-                            "http://localhost:8987/hotel/{hotelId}",
-                            Hotel.class,
-                            rating.getHotelId()
-                    );
+                    /**
+                     * using restTemplate
+                     */
+//                    Hotel hotel = restTemplate.getForObject(
+//                            "http://HOTEL-SERVICE/hotel/{hotelId}",
+//                            Hotel.class,
+//                            rating.getHotelId()
+//                    );
+
+
+                    /**
+                     * using Feign Client
+                     */
+                    Hotel hotel = hotelService.getHotelById(rating.getHotelId());
 
                     rating.setHotel(hotel);
                     return rating;
