@@ -9,21 +9,23 @@
         <outputRelativeToContentRoot value="true" />
         <module name="ServiceRegistry" />
       </profile>
-      <profile name="Annotation profile for User-Service" enabled="true">
+      <profile name="Annotation profile for ApiGateWay" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.42/lombok-1.18.42.jar" />
         </processorPath>
-        <module name="RatingService" />
-        <module name="userService" />
         <module name="HotelService" />
+        <module name="RatingService" />
+        <module name="ApiGateWay" />
+        <module name="userService" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="ApiGateWay" options="-parameters" />
       <module name="HotelService" options="-parameters" />
       <module name="RatingService" options="-parameters" />
       <module name="ServiceRegistry" options="-parameters" />

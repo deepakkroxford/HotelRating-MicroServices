@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: Hotel-Service
+    name: HOTEL-SERVICE
   datasource:
     url: jdbc:postgresql://localhost:5439/microservice
     username: postgres
@@ -21,5 +21,5 @@ eureka:
     fetch-registry: true
     register-with-eureka: true
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://localhost:8762/eureka
 

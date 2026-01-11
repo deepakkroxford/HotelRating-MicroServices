@@ -2,6 +2,7 @@ package com.example.userService.controller;
 
 
 
+import com.example.userService.entity.Hotel;
 import com.example.userService.entity.User;
 import com.example.userService.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/users")
 public class UserController {
 
     private UserService userService;

@@ -141,6 +141,11 @@ public class UserImpl implements UserService {
         }else {
             return "User not found";
         }
+    }
 
+
+    public Hotel getHotelById(String hotelId) {
+        Hotel hotel = hotelService.getHotelById(hotelId);
+        return hotel;
     }
 }
