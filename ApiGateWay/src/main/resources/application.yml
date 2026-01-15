@@ -7,25 +7,34 @@ spring:
 
   cloud:
     gateway:
-      routes:
-        - id: USER-SERVICE
-          uri: lb://USER-SERVICE
-          predicates:
-            - Path=/users/**
+      server:
+        webmvc:
+          routes:
+            - id: USER-SERVICE
+              uri: http://localhost:8089
+              predicates:
+                - Path=/users/**
 
-        - id: HOTEL-SERVICE
-          uri: lb://HOTEL-SERVICE
-          predicates:
-            - Path=/hotel/**
+            - id: HOTEL-SERVICE
+              uri: lb://HOTEL-SERVICE
+              predicates:
+                - Path=/hotel/**
 
-        - id: RATING-SERVICE
-          uri: lb://RATING-SERVICE
-          predicates:
-            - Path=/ratings/**
+            - id: RATING-SERVICE
+              uri: lb://RATING-SERVICE
+              predicates:
+                - Path=/ratings/**
 
 eureka:
   client:
     register-with-eureka: true
+    initial-instance-info-replication-interval-seconds: 5
+    registry-fetch-interval-seconds: 5
     fetch-registry: true
     service-url:
       defaultZone: http://localhost:8762/eureka
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    reactor.netty.http.client: DEBUG
