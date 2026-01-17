@@ -73,10 +73,6 @@ public class UserImpl implements UserService {
         List<Rating> ratings = ratingServices.getRatings(id);
 
 
-
-
-
-
         // Fetch hotel for each rating
         List<Rating> ratingList = ratings.stream()
                 .map(rating -> {

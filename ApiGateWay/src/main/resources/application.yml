@@ -4,14 +4,13 @@ server:
 spring:
   application:
     name: API-GATEWAY
-
   cloud:
     gateway:
       server:
         webmvc:
           routes:
             - id: USER-SERVICE
-              uri: http://localhost:8089
+              uri: lb://USER-SERVICE
               predicates:
                 - Path=/users/**
 
@@ -24,7 +23,6 @@ spring:
               uri: lb://RATING-SERVICE
               predicates:
                 - Path=/ratings/**
-
   config:
     import: optional:configserver:http://localhost/8085
 
