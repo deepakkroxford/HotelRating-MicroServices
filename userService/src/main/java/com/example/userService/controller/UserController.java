@@ -5,6 +5,11 @@ package com.example.userService.controller;
 import com.example.userService.entity.Hotel;
 import com.example.userService.entity.User;
 import com.example.userService.service.UserService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
+import lombok.Builder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +20,8 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
 
-    private UserService userService;
+    private Logger logger = LoggerFactory.getLogger(UserController.class);
+    private final UserService userService;
 
     /**
      * Dependency Injection through the constructor
@@ -30,14 +36,31 @@ public class UserController {
        return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
 
-
+int count = 1;
 
     @GetMapping("/{id}")
+    @Retry(name="ratingHotelRetry", fallbackMethod = "ratingHotelFallBack")
+    //@CircuitBreaker(name = "ratingHotelBreaker",fallbackMethod = "ratingHotelFallBack")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
+
+        logger.info("Retry count {}", count);
+        count++;
         User user =  userService.findById(id);
+
         return ResponseEntity.ok(user);
     }
 
+    // creating fallback method for circuit Breaker
+
+    public ResponseEntity<User> ratingHotelFallBack(Long id, Exception ex) {
+        logger.info("fallback is executed because service is down", ex.getMessage());
+        User user = User.builder().id(id)
+                .username("Ujala Kumari")
+                .email("ujala@gmail.com")
+                .about("good girl").build();
+
+        return new ResponseEntity<>(user,HttpStatus.OK);
+    }
 
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
